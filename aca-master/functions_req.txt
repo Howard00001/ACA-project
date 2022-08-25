@@ -1,0 +1,32 @@
+para
+
+
+K = conKnl(conDist(X, X), 'nei', .02);
+#[D, DSq] = conDist(X1, X2, varargin)
+% count similarity matrix
+
+seg0s = segIni(K, para);
+seg0s{i} = segIniR(K, para);
+#[seg0s, inis, para] = segIni(K, para, varargin)
+#[seg, KP] = segIniP(K, para)
+% initialize the segmentation
+[cpp] function S = conPropSim(S0, maW)
+% count progative similarity matrix
+I = cluSc(KP, para.k);
+#[H, Y] = cluSc(S, k)
+% spectral clustering
+seg = mergeDP(I, para);
+#seg = mergeDP(I, para)
+% Obtain the class labels of segments when given lables for frames
+
+[segAca, segAcas] = segAlg('aca', [], K, para, seg0s, segT);
+#
+
+showM(K, 'fig', [1 1 2 1]);
+#
+
+showSeq(X, 'fig', [1 1 2 2]);
+#
+
+showSegBar(segAca, 'fig', [1 1 1 1], 'mkSiz', 0, 'lnWid', 1);
+#
