@@ -16,5 +16,6 @@ function clusterPlot(labels,names,fname)
     % save figure
     if size(fname,2)>0
         saveas(gcf,fname);
+        clf;
     end
 end

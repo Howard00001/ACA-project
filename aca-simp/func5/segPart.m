@@ -1,4 +1,4 @@
-function [sP, LP, segs, labels] = segPart(seg,label,ends)
+function [sP, LP, ss, labels] = segPart(seg,label,ends)
 % Split the aca result by different video (ex : health, pain)
 %
 % Input
@@ -9,7 +9,7 @@ function [sP, LP, segs, labels] = segPart(seg,label,ends)
 % Output
 %   sP : segments partitions
 %   LP : labels partitions
-%   segs : segment frame of each videos
+%   ss : segment points of each videos
 %   labels : cluster statistic
 %
     sP = {};
@@ -20,7 +20,7 @@ function [sP, LP, segs, labels] = segPart(seg,label,ends)
         ed = find(seg>=ends(i+1)+1,1);
         sP{i} = seg(:,st:ed);
         LP{i} = label(:,st2:ed-1);
-        if seg==ends(i+1)
+        if seg(ed)==ends(i+1)
             st = ed;
             st2 = ed;
         else
@@ -29,14 +29,14 @@ function [sP, LP, segs, labels] = segPart(seg,label,ends)
         end
     end
     
-    segs = {};
+    ss = {};
     labels = [];
     for i=1:size(LP,2)
         sseg = sP{i};
         sseg = sseg - ends(i);
         sseg(1)=1;
         sseg(end) = ends(i+1)-ends(i)+1;
-        segs{i} = sseg;
+        ss{i} = sseg;
         label = LP{i};
         labels = [labels sum(label,2)];
     end
