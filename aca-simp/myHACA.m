@@ -60,6 +60,7 @@ end
 save("tmp.mat");
 
 nseg = reCluster(nX,ns,sel_num);
-ends = ns(splits(1:end-1));
+ends = [1 ns(splits(1:end-1))];
+ends = [ends ns(end)];
 [sP, LP, ss, labels] = segPart(nseg.s,nseg.G,ends);
 clusterPlot(labels,nnames,strcat(out_path,'recluster.png'));
