@@ -6,7 +6,7 @@ function clusterPlot(labels,names,fname)
 %   names : lengend name for each video
 %   fname : saving figure path + file name
 %
-    figure;
+%     figure;
     bar(labels);
     legend(names,'location','eastoutside');
     title('result');
