@@ -50,7 +50,11 @@ for i=1:size(micenames,2)
     % aca
     K = conKnl(conDist(X, X));
     seg = segIniR(K, para);
-    segResult = segAca(K, para, seg);
+    if para.haca
+        segResult = segAca(K, para, seg);
+    else
+        segResult = segHAca(K, paraH, seg);
+    end
     % plot result
     [sP, LP, ss, labels] = segPart(segResult.s,segResult.G,ends);
     clusterPlot(labels,names,strcat(out_path,micename,'.png'));
@@ -60,6 +64,7 @@ for i=1:size(micenames,2)
     [nX,ns,splits] = concateSel(nX,ns,splits,cX,cs,csplits);
     
 end
+K=[];
 save(strcat(out_path,"tmp.mat"));
 
 %% Recluster

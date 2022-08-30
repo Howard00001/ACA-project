@@ -8,6 +8,7 @@ function sel = largeDiff(labels, n, mode)
 %           'scale' scale difference
 %           'amount2' segment number difference each video get n//2
 %           'scale2' segment number scale each video get n/2
+%           'treat1' segment number scale of larger treat(second) part 
 % Output
 %   sel : selected cluster's index
 %
@@ -36,5 +37,11 @@ function sel = largeDiff(labels, n, mode)
         [~, I] = sort(sc, 'descend');
         sel = I(1:n);
         sel = [sel I(end:-1:end-n+1)];
+    elseif strcmp(mode,'treat1')
+        diff = labels(:,2)-labels(:,1);
+        m = max([ones(size(labels,1),1) labels(:,1)],[],2);
+        sc = diff./m;
+        [~, I] = sort(sc, 'descend');
+        sel = I(1);
     end
 end
