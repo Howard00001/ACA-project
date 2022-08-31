@@ -1,4 +1,4 @@
-function K = conKnl(D)
+function K = conKnl(D, nei)
 % Construct the kernel matrix from distance.
 %
 % Input
@@ -13,8 +13,9 @@ function K = conKnl(D)
 %   K       -  kernel matrix, n x n
 %
     % function option
-    nei = .2;
+%     nei = .2;
     
     sigma = bandG(D, nei);
+%     sigma = 1;
     K = exp(- (D .^ 2) / (2 * sigma ^ 2 + eps));
 end

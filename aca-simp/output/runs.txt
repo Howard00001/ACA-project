@@ -1,0 +1,5 @@
+1,2 : old type
+
+3 : (10,20), ACA, 8-means, no_reduction
+
+3fix : same as 3 with fix kernel sigma=1

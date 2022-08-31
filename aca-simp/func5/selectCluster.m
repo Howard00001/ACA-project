@@ -13,7 +13,12 @@ function [nX,nseg,splits] = selectCluster(X,seg,G,sel,ends)
 %   nseg : new segment of selected cluster
 %   splits : record the last segment index of each video
 %
-    ind = find(sum(G(sel,:)));
+    if size(sel,2)>1
+        ind = find(sum(G(sel,:)));
+    else
+        ind = find(G(sel,:));
+    end
+    
     nX = [];
     nseg = 1;
     splits = [];
