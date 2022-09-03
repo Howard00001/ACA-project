@@ -1,4 +1,4 @@
-function avg_dist = dtaks2(X1,seg1,X2,seg2)
+function avg_dist = dtaks2(X1,seg1,X2,seg2,kernel)
 % (Generalized) average Dynamic Time Alignment Kernel distance for two sets.
 %
 % Input
@@ -21,7 +21,7 @@ function avg_dist = dtaks2(X1,seg1,X2,seg2)
     end
 
     % similarity matrix
-    K = conKnl(conDist(X1, X2));
+    K = conKnl(conDist(X1, X2),kernel);
     
     % length represent
     q = size(K, 1);  % data1 frame length

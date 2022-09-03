@@ -3,3 +3,7 @@
 3 : (10,20), ACA, 8-means, no_reduction
 
 3fix : same as 3 with fix kernel sigma=1
+
+4 : (8,16) (3,8), HACA, 8-4means, no_reduction
+
+5 : (10,20), ACA, 5-means, no_reduction
