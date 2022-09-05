@@ -7,3 +7,5 @@
 4 : (8,16) (3,8), HACA, 8-4means, no_reduction
 
 5 : (10,20), ACA, 5-means, no_reduction
+
+6 : (15,30), ACA, 4-means. no_reduction
