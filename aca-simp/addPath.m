@@ -9,6 +9,7 @@ addpath(genpath([footpath '/func2']));
 addpath(genpath([footpath '/func3']));
 addpath(genpath([footpath '/func4']));
 addpath(genpath([footpath '/func5']));
+addpath(genpath([footpath '/func6']));
 
 % random seed generation
 rand('twister', sum(100 * clock));
