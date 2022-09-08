@@ -1,7 +1,7 @@
 function names = getAllNames(paths)
     tmp = split(paths,'/');
-    files = tmp(:,:,-1);
+    files = tmp(:,:,end);
     tmp = split(files,'-');
-    names = tmp(:,:,2);
+    names = strcat(tmp(:,:,1), '-',tmp(:,:,2));
     names = unique(names);
 end

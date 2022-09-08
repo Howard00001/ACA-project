@@ -1,4 +1,4 @@
-function showSegBar(seg, fig, lnWid, sel)
+function showSegBar(s, G, fig, lnWid, sel, title_name)
 % Show segmentation of one sequence. The segments would be displayed as rectangulars.
 %
 % Input
@@ -10,12 +10,13 @@ function showSegBar(seg, fig, lnWid, sel)
     % show option
     figure(fig(1));
     subplot(fig(2), fig(3), fig(4), 'replace');
+    title(title_name);
 
     % function option
 %     lnWid = 1;
 
     % plotted segment
-    s = seg.s; G = seg.G;
+    % ss = seg.s; G = seg.G;
     [k, m] = size(G);
     cs = 1 : k; 
     visC = zeros(1, k); %idx2vis(cs, k);
