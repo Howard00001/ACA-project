@@ -81,7 +81,7 @@ def combine_feat(raw):
 
 if __name__=='__main__':
     '''
-    python feature_process_front.py --inpath C:\Users\x\Desktop\project\feat\featgen\health_base.xml
+    python feature_process_front.py --inpath ../feat/featgen/health_base.xml
     '''
     parser = argparse.ArgumentParser()
     parser.add_argument('--inpath', type=str, default='')
