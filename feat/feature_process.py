@@ -3,19 +3,29 @@ import cv2
 import argparse
 
 class dlc:
-    def __init__(self, dlc_path=None):
+    def __init__(self, dlc_path=None, raw=True):
         #dlc data
         self.raw = None
         self.raw_wrap = None
 
         if dlc_path:
-            self.read_dlc(dlc_path)
+            if raw:
+                self.read_dlc(dlc_path)
+            else:
+                self.read_dlc2(dlc_path)
 
     def read_dlc(self,dlc_path):
         getcol = (1,2,4,5,7,8,10,11,13,14,16,17,19,20)
         raw = np.genfromtxt(dlc_path, delimiter=",")[3:,getcol]
         self.raw = raw.astype(int)
         # wrap 5 different landmark N*10 => N*5*2
+        self.raw_wrap = np.zeros([len(raw),7,2],dtype='int')
+        for i in range(len(raw)):
+            for j in range(14):
+                self.raw_wrap[i,int(j/2),j%2] = self.raw[i,j]
+    def read_dlc2(self,dlc_path):
+        raw = np.genfromtxt(dlc_path, delimiter=",")
+        self.raw = raw.astype(int)
         self.raw_wrap = np.zeros([len(raw),7,2],dtype='int')
         for i in range(len(raw)):
             for j in range(14):
@@ -35,12 +45,11 @@ def mice_area(vid_path):
     return np.array(areas)
 
 
-def count_dist(raw):
+def count_dist(raw, sel=[[0,1],[0,2],[1,3],[2,3],[3,4],[3,5],[4,6],[5,6]]):
     '''
     count 10 distances for 5 points dlc (raw) in each frame
     '''
     distances = []
-    sel = [[0,1],[0,2],[1,3],[2,3],[3,4],[3,5],[4,6],[5,6]]
     for [i,j] in sel:
         p1 = raw[:,2*i:2*i+2]
         p2 = raw[:,2*j:2*j+2]
@@ -59,12 +68,20 @@ def count_angle(raw, sel=[[0,3,6]]):
         angle.append(abs(np.arctan2(v1[:,0],v1[:,1])-np.arctan2(v2[:,0],v2[:,1])))
     return np.array(angle).T
 
-def combine_feat(raw):
+def combine_feat(raw, sel_dist=[[0,1],[0,2],[1,3],[2,3],[3,4],[3,5],[4,6],[5,6]], sel_ang=[[0,3,6]]):
     '''
     return concatenation of distance and angle
     '''
-    d = count_dist(raw)
-    a = count_angle(raw)
+    d = []
+    a = []
+    if sel_dist:
+        d = count_dist(raw, sel_dist)
+    elif sel_ang:
+        return count_angle(raw, sel_ang)
+    if sel_ang:
+        a = count_angle(raw, sel_ang)
+    elif sel_dist:
+        return count_dist(raw, sel_dist)
     return np.hstack([d,a])
 
 def generate_tmpfeat(feat):
