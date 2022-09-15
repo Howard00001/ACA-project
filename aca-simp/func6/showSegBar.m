@@ -26,7 +26,7 @@ function showSegBar(s, G, fig, lnWid, sel, title_name)
     visM(ms) = 1;
 
     hold on;
-    if ~exist('sel','var')
+    if sel==-1
         [markers, colors] = genMarkers;
     else
         [markers, colors] = genMarkers2(sel);
