@@ -1,6 +1,8 @@
 import numpy as np
 import cv2
 import argparse
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.decomposition import PCA
 
 class dlc:
     def __init__(self, dlc_path=None, raw=True):
@@ -68,21 +70,28 @@ def count_angle(raw, sel=[[0,3,6]]):
         angle.append(abs(np.arctan2(v1[:,0],v1[:,1])-np.arctan2(v2[:,0],v2[:,1])))
     return np.array(angle).T
 
-def combine_feat(raw, sel_dist=[[0,1],[0,2],[1,3],[2,3],[3,4],[3,5],[4,6],[5,6]], sel_ang=[[0,3,6]]):
+def combine_feat(raw, sel_dist=[[0,1],[0,2],[1,3],[2,3],[3,4],[3,5],[4,6],[5,6]], sel_ang=[[0,3,6]], normalize=True):
     '''
     return concatenation of distance and angle
     '''
-    d = []
-    a = []
-    if sel_dist:
+    if sel_dist and sel_ang:
         d = count_dist(raw, sel_dist)
-    elif sel_ang:
-        return count_angle(raw, sel_ang)
-    if sel_ang:
         a = count_angle(raw, sel_ang)
+        feat = np.hstack([d,a])
     elif sel_dist:
-        return count_dist(raw, sel_dist)
-    return np.hstack([d,a])
+        feat = count_dist(raw, sel_dist)
+    elif sel_ang:
+        feat = count_angle(raw, sel_ang)
+    
+    if normalize:
+        scaler = MinMaxScaler(feature_range=(0,1))
+        scaler.fit(feat)
+        feat = scaler.transform(feat)
+    # if dim_red:
+    #     pca = PCA(n_components=dim_red)
+    #     feat = pca.fit_transform(feat)
+
+    return feat
 
 def generate_tmpfeat(feat):
     tmp_feat = []
