@@ -9,6 +9,7 @@ class dlc:
         #dlc data
         self.raw = None
         self.raw_wrap = None
+        self.frame_index = None
 
         if dlc_path:
             if raw:
@@ -19,6 +20,13 @@ class dlc:
     def read_dlc(self,dlc_path):
         getcol = (1,2,4,5,7,8,10,11,13,14,16,17,19,20)
         raw = np.genfromtxt(dlc_path, delimiter=",")[3:,getcol]
+        frame_index = np.genfromtxt(dlc_path, delimiter=",")[3:,0]
+        #remove nan
+        notnan = ~np.isnan(raw).any(axis=1)
+        raw = raw[notnan]
+        frame_index = frame_index[notnan]
+        self.frame_index = np.expand_dims(frame_index, axis=1)
+        #
         self.raw = raw.astype(int)
         # wrap 5 different landmark N*10 => N*5*2
         self.raw_wrap = np.zeros([len(raw),7,2],dtype='int')
@@ -70,10 +78,12 @@ def count_angle(raw, sel=[[0,3,6]]):
         angle.append(abs(np.arctan2(v1[:,0],v1[:,1])-np.arctan2(v2[:,0],v2[:,1])))
     return np.array(angle).T
 
-def combine_feat(raw, sel_dist=[[0,1],[0,2],[1,3],[2,3],[3,4],[3,5],[4,6],[5,6]], sel_ang=[[0,3,6]], normalize=True):
+def combine_feat(dlc_raw, sel_dist=[[0,1],[0,2],[1,3],[2,3],[3,4],[3,5],[4,6],[5,6]], sel_ang=[[0,3,6]], normalize=True):
     '''
     return concatenation of distance and angle
     '''
+    raw = dlc_raw.raw
+    frame_index = dlc_raw.frame_index
     if sel_dist and sel_ang:
         d = count_dist(raw, sel_dist)
         a = count_angle(raw, sel_ang)
@@ -90,7 +100,7 @@ def combine_feat(raw, sel_dist=[[0,1],[0,2],[1,3],[2,3],[3,4],[3,5],[4,6],[5,6]]
     # if dim_red:
     #     pca = PCA(n_components=dim_red)
     #     feat = pca.fit_transform(feat)
-
+    feat = np.hstack([frame_index, feat])
     return feat
 
 def generate_tmpfeat(feat):

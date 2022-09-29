@@ -1,6 +1,8 @@
 import numpy as np
 import argparse
 import xml.etree.cElementTree as ET
+from sklearn.preprocessing import MinMaxScaler
+import os
 
 def readxml(path):
     '''
@@ -12,7 +14,7 @@ def readxml(path):
     for child_of_root in hr_root:
         test_child.append(child_of_root)
     # get locations
-    test = [None]*10
+    test = [None]*11
     for name_count in range(5):
         tmpx = []
         tmpy = []
@@ -21,13 +23,17 @@ def readxml(path):
             y = (int(test_child[name_count + 2][i].attrib['y']) + int(test_child[name_count + 2][i].attrib['height']) * 0.5)
             tmpx.append(x)
             tmpy.append(y)
-        test[name_count*2] = tmpx
-        test[name_count*2+1] = tmpy
-        
-        
+        test[1+name_count*2] = tmpx
+        test[1+name_count*2+1] = tmpy
+    # frame index
+    tmpx = []
+    for i in range(len(test_child[2])):
+        tmpx.append(int(test_child[name_count + 2][i].attrib['frame']))
+    test[0] = tmpx
+
     test_loc = np.array(test).T
     test_loc = np.array(test_loc,dtype='int_')
-    label = np.array([["Reyex","Reyey","Leyex","Leyey","Rearx","Reary","Learx","Leary","nosex","nosey"]])
+    label = np.array([["frame","Reyex","Reyey","Leyex","Leyey","Rearx","Reary","Learx","Leary","nosex","nosey"]])
     test_loc = np.concatenate([label,test_loc])
     return test_loc
 
@@ -38,12 +44,21 @@ def get_feat(filepath='', feat_sel=1):
     '''
     if filepath:
         raw = np.loadtxt(filepath, delimiter=',', skiprows=1, dtype='int_')
+        frame_index = np.expand_dims(raw[:,0], axis=1)
+        raw = raw[:,1:]
     if feat_sel ==1:
         feat = count_dist(raw)
     elif feat_sel==2:
         feat = count_angle(raw)
     elif feat_sel==3:
         feat = combine_feat(raw)
+    
+    # normalize
+    scaler = MinMaxScaler(feature_range=(0,1))
+    scaler.fit(feat)
+    feat = scaler.transform(feat)
+
+    feat = np.hstack([frame_index, feat])
     return feat
 
 def count_dist(raw):
@@ -99,6 +114,6 @@ if __name__=='__main__':
 
         if not opt.outpath:
             outpath = opt.inpath.replace('.xml','.csv')
-            np.savetxt(outpath,feat,delimiter=",")
+            np.savetxt(outpath,feat,delimiter=",", fmt="%s")
         else:
-            np.savetxt(opt.outpath,feat,delimiter=",")
+            np.savetxt(opt.outpath,feat,delimiter=",", fmt="%s")
