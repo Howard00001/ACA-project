@@ -14,12 +14,22 @@ function [X, ends, names] = loadData(paths, para)
     X = [];
     ends = [];
     names = {};
+    culmu = 0;
     for i=1:sz
         tmp = table2array(readtable(paths{i}))';
         if para.reduct
             [~, tmp, ~, ~] = tempoReduce(tmp, para);  %temporal reduction
         end
-        ends = [ends size(X,2)];
+        if para.split > 0
+            sel =round(size(tmp,2)*para.split);
+            tmp = tmp(:,1:sel);
+        end
+        if para.split < 0
+            sel =round(size(tmp,2)*-para.split);
+            tmp = tmp(:,sel:end);
+        end
+        culmu = culmu+size(tmp,2);
+        ends = [ends culmu];
         X = [X tmp];
         
         % get name
@@ -27,5 +37,5 @@ function [X, ends, names] = loadData(paths, para)
         sp = split(sp{end},'.c');
         names{i} = sp{1};
     end
-    ends = [ends size(X,2)];
+    %ends = [ends size(X,2)];
 end

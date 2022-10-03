@@ -1,4 +1,4 @@
-function [G, cost, acc] = kmean(X, k)
+function [G, cost, acc, D2C] = kmean(X, k)
 % K-means. A wrapper of matlab function, kmeans.
 % After initalized serveral times, the one with the minimum cost is selected.
 %
@@ -19,11 +19,13 @@ function [G, cost, acc] = kmean(X, k)
     
     XTran = X';
     Gs = cell(1, nRep); 
+    D2Cs = cell(1, nRep);
     costs = zeros(1, nRep);
     warning off;
     for i = 1 : nRep
 %         try
-        L = kmeans(XTran, k, 'emptyaction', 'singleton', 'display', 'off');
+        [L, ~,~,D2C] = kmeans(XTran, k, 'emptyaction', 'singleton', 'display', 'off');
+        D2Cs{i} = D2C; 
 %         catch
 %             err = lasterror;
 %             sprintf('%s\n', err.message);
@@ -41,5 +43,6 @@ function [G, cost, acc] = kmean(X, k)
     
     [cost, ind] = min(costs);
     G = Gs{ind};
+    D2C = D2Cs{ind};
     acc = 0;
 end

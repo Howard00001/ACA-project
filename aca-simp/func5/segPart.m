@@ -16,11 +16,11 @@ function [sP, LP, ss, labels] = segPart(seg,label,ends)
     LP = {};
     st = 1;
     st2 = 1;
-    for i=1:size(ends,2)-1
-        ed = find(seg>=ends(i+1)+1,1);
+    for i=1:size(ends,2)
+        ed = find(seg>=ends(i)+1,1);
         sP{i} = seg(:,st:ed);
         LP{i} = label(:,st2:ed-1);
-        if seg(ed)==ends(i+1)
+        if seg(ed)==ends(i)
             st = ed;
             st2 = ed;
         else
@@ -29,13 +29,19 @@ function [sP, LP, ss, labels] = segPart(seg,label,ends)
         end
     end
     
+    
     ss = {};
     labels = [];
-    for i=1:size(LP,2)
+    %i==1
+    sseg = sP{1};
+    ss{1} = sseg;
+    label = LP{1};
+    labels = [labels sum(label,2)];
+    for i=2:size(LP,2)
         sseg = sP{i};
-        sseg = sseg - ends(i);
+        sseg = sseg - ends(i-1);
         sseg(1)=1;
-        sseg(end) = ends(i+1)-ends(i)+1;
+        sseg(end) = ends(i)-ends(i-1)+1;
         ss{i} = sseg;
         label = LP{i};
         labels = [labels sum(label,2)];

@@ -1,4 +1,4 @@
-function [H, Y] = cluSc(S, k)
+function [H, Y, D2C] = cluSc(S, k)
 % Spectral Clustering.
 %
 % Input
@@ -26,5 +26,5 @@ function [H, Y] = cluSc(S, k)
     X = diag(tmp) \ X;
     
     % k-means
-    H = kmean(X', k);
+    [H,~,~,D2C] = kmean(X', k);
 end

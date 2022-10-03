@@ -1,11 +1,11 @@
-function inference(all_paths, out_path, micename, para, paraH)
+function inference(all_paths, out_path, sel, para, paraH)
 % ACA full process for data in one folder
 %
 % Input
 %   all_path - file paths of all csv
 %
     % data process
-    sel = contains(all_paths, ['/',micename,'-']);
+    %sel = contains(all_paths, ['/',micename,'-']);
     paths=all_paths(sel);
     [X, ends, ~] = loadData(paths,para);
     
