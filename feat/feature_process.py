@@ -12,9 +12,9 @@ class dlc:
         self.frame_index = None
 
         if dlc_path:
-            if raw:
+            if raw: # dlc to coord
                 self.read_dlc(dlc_path)
-            else:
+            else: # load coord directly
                 self.read_dlc2(dlc_path)
 
     def read_dlc(self,dlc_path):
@@ -29,17 +29,14 @@ class dlc:
         #
         self.raw = raw.astype(int)
         # wrap 5 different landmark N*10 => N*5*2
-        self.raw_wrap = np.zeros([len(raw),7,2],dtype='int')
-        for i in range(len(raw)):
-            for j in range(14):
-                self.raw_wrap[i,int(j/2),j%2] = self.raw[i,j]
+        self.raw_wrap = np.resize(self.raw,(len(self.raw),int(self.raw.shape[1]/2),2))
+        # way to unwarp c : np.resize(c,(len(c),c.shape[1]*c.shape[2]))
+
     def read_dlc2(self,dlc_path):
         raw = np.genfromtxt(dlc_path, delimiter=",")
         self.raw = raw.astype(int)
-        self.raw_wrap = np.zeros([len(raw),7,2],dtype='int')
-        for i in range(len(raw)):
-            for j in range(14):
-                self.raw_wrap[i,int(j/2),j%2] = self.raw[i,j]
+        self.raw_wrap = np.resize(self.raw,(len(self.raw),int(self.raw.shape[1]/2),2))
+        
 
 def mice_area(vid_path):
     '''
@@ -130,6 +127,51 @@ def default_out(path):
         bt = 'treat'
     return sp[0]+'/'+bt+'_feat.csv'
 
+def align_image(img, fixpt, rotatept, midx=200, midy=200, rotateTo=0):
+    '''
+    move mice to center and align the direction
+    convert image
+    '''
+    dx = midx-fixpt[0]
+    dy = midy-fixpt[1]
+    H = np.float32([[1,0,dx],[0,1,dy]])
+    move = cv2.warpAffine(img,H, (img.shape[1],img.shape[0]))
+    d_angle = (rotateTo-np.arctan2(rotatept[0],rotatept[1]))*180/np.pi
+    H = cv2.getRotationMatrix2D((midx,midy),d_angle,1)
+    move = cv2.warpAffine(move,H, (frame.shape[1],frame.shape[0]))
+    return move
+
+def align_point(coord, fixpt, rotatept, midx=200, midy=200, rotateTo=0):
+    '''
+    move mice to center and align the direction
+    convert landmarks coordinates
+    '''
+    newcoord = coord.copy()
+    dx = midx-fixpt[0]
+    dy = midy-fixpt[1]
+    newcoord[:,0] = newcoord[:,0]+dx
+    newcoord[:,1] = newcoord[:,1]+dy
+    d_angle = (rotateTo-np.arctan2(rotatept[0],rotatept[1]))*180/np.pi
+    H = cv2.getRotationMatrix2D((midx,midy),d_angle,1)
+    A = H[:,0:2]
+    B = H[:,2]
+    newcoord = np.matmul(newcoord,A.T)
+    newcoord[:,0] = newcoord[:,0]+B[0]
+    newcoord[:,1] = newcoord[:,1]+B[1]
+    newcoord = np.int32(newcoord)
+    return newcoord
+
+def align_all(raw_wrap, wrap=False, midx=200, midy=200, rotateTo=0, fixpt_index=3, rotatept_index=6):
+    '''
+    run align point for all instance in dlc raw_wrap
+    wrap : True-return wrap, False return raw
+    '''
+    newraw = raw_wrap.copy()
+    for i in range(len(newraw)):
+        newraw[i] = align_point(newraw[i], newraw[i,fixpt_index], newraw[i,rotatept_index], midx=200, midy=200, rotateTo=0)
+    if not wrap:
+        newraw = np.resize(newraw,(len(newraw),newraw.shape[1]*newraw.shape[2]))
+    return newraw
 
 if __name__=='__main__':
     '''
