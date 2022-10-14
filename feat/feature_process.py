@@ -36,6 +36,8 @@ class dlc:
         raw = np.genfromtxt(dlc_path, delimiter=",")
         self.raw = raw.astype(int)
         self.raw_wrap = np.resize(self.raw,(len(self.raw),int(self.raw.shape[1]/2),2))
+        frame_index = np.arange(len(self.raw))
+        self.frame_index = np.expand_dims(frame_index, axis=1)
         
 
 def mice_area(vid_path):
@@ -54,7 +56,7 @@ def mice_area(vid_path):
 
 def count_dist(raw, sel=[[0,1],[0,2],[1,3],[2,3],[3,4],[3,5],[4,6],[5,6]]):
     '''
-    count 10 distances for 5 points dlc (raw) in each frame
+    count distances for points dlc (raw) in each frame
     '''
     distances = []
     for [i,j] in sel:
@@ -75,23 +77,27 @@ def count_angle(raw, sel=[[0,3,6]]):
         angle.append(abs(np.arctan2(v1[:,0],v1[:,1])-np.arctan2(v2[:,0],v2[:,1])))
     return np.array(angle).T
 
-def combine_feat(dlc_raw, sel_dist=[[0,1],[0,2],[1,3],[2,3],[3,4],[3,5],[4,6],[5,6]], sel_ang=[[0,3,6]], normalize=True):
+def combine_feat(dlc_raw, sel_dist=[[0,1],[0,2],[1,3],[2,3],[3,4],[3,5],[4,6],[5,6]], sel_ang=[[0,3,6]], 
+                sel_coord=[0,1,2,3,4,5,8,9,10,11,12,13], normalize=(1,5)):
     '''
     return concatenation of distance and angle
     '''
     raw = dlc_raw.raw
     frame_index = dlc_raw.frame_index
-    if sel_dist and sel_ang:
-        d = count_dist(raw, sel_dist)
+
+    feat = np.zeros([len(raw), 0])
+    if sel_dist:
+        a = count_dist(raw, sel_dist)
+        feat = np.hstack([feat,a])
+    if sel_ang:
         a = count_angle(raw, sel_ang)
-        feat = np.hstack([d,a])
-    elif sel_dist:
-        feat = count_dist(raw, sel_dist)
-    elif sel_ang:
-        feat = count_angle(raw, sel_ang)
+        feat = np.hstack([feat,a])
+    if sel_coord:
+        a = raw[:,sel_coord]
+        feat = np.hstack([feat,a])
     
     if normalize:
-        scaler = MinMaxScaler(feature_range=(0,1))
+        scaler = MinMaxScaler(feature_range=normalize)
         scaler.fit(feat)
         feat = scaler.transform(feat)
     # if dim_red:
