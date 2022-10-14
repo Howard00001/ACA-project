@@ -24,7 +24,7 @@ function G = reCluster_comb(Xs, segResults, para)
                 segResult2 = segResults{k};
                 s2 = segResult2.s;
                 for l=1:size(segResult2.G,2)
-                    X2 = X(s2(j):s2(j+1)-1);
+                    X2 = X(s2(l):s2(l+1)-1);
                     wFs2 = ones(1, size(X2,2)); %frame weight 2
                     jj = jj+1;
                     
