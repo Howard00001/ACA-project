@@ -25,7 +25,7 @@ function [seg, segs] = segAca(K, para, seg0)
         % stop condition
         % if cluEmp(segs{nIter}.G)
         if ~isempty(find(sum(segs{nIter}.G, 2) == 0, 1))
-            prom('b', 'segAca stops due to an empty cluster\n');
+%             prom('b', 'segAca stops due to an empty cluster\n');
             segs{nIter}.obj = inf;
             break;
         elseif isequal(segs{nIter}.G, seg0.G) && isequal(segs{nIter}.s, seg0.s)
