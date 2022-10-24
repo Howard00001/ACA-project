@@ -8,7 +8,6 @@ function G = reCluster_comb(Xs, segResults, para)
             sz = sz+1; 
         end
     end
-    G = 8;
     T = zeros(sz,sz);
     ii=0; % row in T
     for i=1:size(Xs,2)
@@ -19,11 +18,15 @@ function G = reCluster_comb(Xs, segResults, para)
             X1 = X(s1(j):s1(j+1)-1);
             wFs1 = ones(1, size(X1,2)); %frame weight 1
             ii = ii+1;
-            jj = 0; % col in T
-            for k=1:size(Xs,2)
+            jj = ii-1; % col in T
+            for k=i:size(Xs,2)
                 segResult2 = segResults{k};
                 s2 = segResult2.s;
-                for l=1:size(segResult2.G,2)
+                st = 1;
+                if(k==i)
+                    st = j;
+                end
+                for l=st:size(segResult2.G,2)
                     X2 = X(s2(l):s2(l+1)-1);
                     wFs2 = ones(1, size(X2,2)); %frame weight 2
                     jj = jj+1;
@@ -34,5 +37,6 @@ function G = reCluster_comb(Xs, segResults, para)
             end
         end
     end
+    T = T+triu(T,1)';
     G = cluSc(T, para.k);
 end
