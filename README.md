@@ -12,7 +12,7 @@ pose analysis algorithm (Alignment Cluster Analysis) research works
 
 **Core Concept** :  KKM(kernel k-means), DTAK(Dynamic Time-Alignment Kernel), DP for optimization
 
-**More Details** : [Method intro](./misc/Unsupervised Discovery of Facial Events summary.pdf)
+**More Details** : [Method intro]("./misc/Unsupervised Discovery of Facial Events summary.pdf")
 
 **Reference** : 
 
