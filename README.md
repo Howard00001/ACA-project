@@ -65,7 +65,7 @@ Based on analysis of mice pose data, find out the pose with largest amount diffe
 
 > key motion clips in video
 >
-> ![keymotionindex](C:\Users\x\Desktop\ACA-project\misc\keymotionindex.png)
+> ![keymotionindex](misc\keymotionindex.png)
 
 ----
 
