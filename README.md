@@ -51,7 +51,7 @@ In [aca_simp](./aca-simp) folder:
 In [feat](./feat) folder, preprocess features generate from landmark of mice (DeepLabCut) and try to extract representative pose feature by using distances, angles, SOM map class, PCA reduction features and Autoencoder reduction features.
 
 > landmarks from DeepLabCut
-> ![micefeature](.\misc\micefeature.png)
+> ![micefeature](./misc/micefeature.png)
 
 
 ----
@@ -61,11 +61,11 @@ In [feat](./feat) folder, preprocess features generate from landmark of mice (De
 Based on analysis of mice pose data, find out the pose with largest amount difference then analyze whether the key motion between different dataset had the same features.
 
 > finding key motion by comparing cluster of basal data(health mice) and treat data (pain mice) 
->![keymotion](.\misc\keymotion.png)
+>![keymotion](./misc/keymotion.png)
 
 > key motion clips in video
 >
-> ![keymotionindex](misc\keymotionindex.png)
+> ![keymotionindex](./misc/keymotionindex.png)
 
 ----
 
