@@ -16,7 +16,7 @@ pose analysis algorithm (Alignment Cluster Analysis) research works
 
 **Reference** : 
 
-[original code](https://github.com/zhfe99/aca)
+[original source](https://github.com/zhfe99/aca)
 
 ```
 [1] F. Zhou, F. de la Torre, and J. K. Hodgins, "Aligned cluster analysis for temporal segmentation of human motion," in International Conference on Automatic Face and Gesture Recognition (FG), 2008.
